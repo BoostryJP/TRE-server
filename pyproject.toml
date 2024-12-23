@@ -61,7 +61,7 @@ extend-select = ["UP042"]
 # E731: Do not assign a lambda expression, use a def
 # E501: Line too long (trust formatter)
 ignore = ["E402", "E711", "E712", "E721", "E722", "E731", "E501"]
-exclude = ["migrations/*"]
+exclude = []
 
 [tool.ruff.lint.extend-per-file-ignores]
 # F401 [*] xxx imported but unused
@@ -70,12 +70,6 @@ exclude = ["migrations/*"]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-
-[tool.pytest.ini_options]
-addopts = "-m 'not alembic'"
-markers = [
-    "alembic: tests for alembic",
-]
 
 [tool.coverage.run]
 branch = true

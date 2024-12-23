@@ -1,4 +1,4 @@
-# TRE-server
+# TRE-server 🕰️
 This product is a time server designed for Timed-Release Encryption.
 As a cutting-edge application, it includes sample implementations of Multiple Timed-Release-Encryption and "E-Quality".
 
