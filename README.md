@@ -1,6 +1,6 @@
 # TRE-server
-This product is a state-of-the-art time server designed for Timed-Release Encryption.
-It showcases cutting-edge applications, including support for multi-type Timed-Release Encryption and a sample implementation of E-Quality.
+This product is a time server designed for Timed-Release Encryption.
+As a cutting-edge application, it includes sample implementations of Multiple Timed-Release-Encryption and "E-Quality".
 
 ## Installation
 
