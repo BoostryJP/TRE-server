@@ -1,5 +1,6 @@
-# MTRC
-Multiple Time-Release Cryptography service
+# TRE-server
+This product is a state-of-the-art time server designed for Timed-Release Encryption.
+It showcases cutting-edge applications, including support for multi-type Timed-Release Encryption and a sample implementation of E-Quality.
 
 ## Installation
 
