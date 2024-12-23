@@ -10,9 +10,15 @@ from py_ecc.optimized_bls12_381 import G1, curve_order
 from py_ecc.optimized_bls12_381.optimized_curve import multiply
 from py_ecc.optimized_bls12_381.optimized_pairing import pairing
 
+release_t = int(datetime(2025, 1, 1, 0, 0).timestamp())
+print(f"<T> = {release_t}")
+
 ################################################
 # [Time-Server] Generate master key & pub key
 ################################################
+print("""
+================== [Time-Server] Generate master key & pub key ==================""")
+
 master_sk = int.from_bytes(secrets.token_bytes(32)) % curve_order
 print(f"<master_sk> = {master_sk}")
 
@@ -22,8 +28,8 @@ print(f"<P_X> = {p_x}")
 ################################################
 # [Time-Server] Generate time key
 ################################################
-release_t = int(datetime(2025, 1, 1, 0, 0).timestamp())
-print(f"<T> = {release_t}")
+print("""
+================== [Time-Server] Generate time key ==================""")
 
 q_x = multiply(
     hash_to_G2(str(release_t).encode(), G2Basic.DST, G2Basic.xmd_hash_function),
@@ -34,6 +40,9 @@ print(f"<Q_X> = {q_x}")
 ################################################
 # [User] Encrypt message
 ################################################
+print("""
+================== [User] Encrypt message ==================""")
+
 original_txt = "test_text"
 print(f"Text to encrypt = '{original_txt}'")
 
@@ -57,6 +66,9 @@ print(f"<C_2> = {c_2}")
 ################################################
 # [User] Decrypt message
 ################################################
+print("""
+================== [User] Decrypt message ==================""")
+
 dec_key = pairing(q_x, c_1)
 _hash = sha256()
 for _item in dec_key.coeffs:
