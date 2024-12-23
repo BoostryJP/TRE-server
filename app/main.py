@@ -40,7 +40,7 @@ from config import SERVER_NAME
 
 tags_metadata = [
     {"name": "root", "description": ""},
-    {"name": "time-key", "description": "Time key for timed-release encryption"},
+    {"name": "key", "description": "Keys for timed-release encryption"},
 ]
 
 app = FastAPI(
