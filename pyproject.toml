@@ -1,7 +1,7 @@
 [project]
-name = "MTRC"
+name = "TRE-server"
 version = "0.1"
-description = "Multiple Time-Release Cryptography service"
+description = "Timed-Release Encryption server"
 authors = [
     {name = "BOOSTRY Co., Ltd.", email = "dev@boostry.co.jp"},
 ]
