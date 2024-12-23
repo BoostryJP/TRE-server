@@ -4,17 +4,27 @@ As a cutting-edge application, it includes sample implementations of Multiple Ti
 
 ## Installation
 
-#### Create virtual environment
+### Create virtual environment
 ```bash
 $ uv venv
 ```
 
-#### Install packages
+### Install packages
 ```bash
 $ make install
 ```
 
-#### Update packages
+### Update lock file
 ```bash
 $ make update
+```
+
+## Start the API server
+
+Please set the environment variable `MASTER_KEY` in advance. 
+If it is not set, a default value will be used.
+
+The server will start with the following command:
+```bash
+$ make run
 ```

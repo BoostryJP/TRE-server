@@ -13,5 +13,8 @@ format:
 lint:
 	uv run ruff check --fix
 
+run:
+	uv run gunicorn --worker-class server.AppUvicornWorker app.main:app
+
 test:
 	uv run pytest tests/
