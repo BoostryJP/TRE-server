@@ -64,4 +64,4 @@ for _item in dec_key.coeffs:
     _hash.update(_item.to_bytes(48))
 print(xor(c_2, _hash.digest()))
 decrypted_text = xor(c_2, _hash.digest()).decode()
-print(f"Decrypted text = {decrypted_text}")
+print(f"Decrypted text = '{decrypted_text}' => {original_txt == decrypted_text}")
