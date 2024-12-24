@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        test_target: ['tests/app/']
+        test_target: ['tests/']
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-test-image
