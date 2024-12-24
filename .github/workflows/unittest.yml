@@ -1,0 +1,101 @@
+name: Unit Test
+on: [pull_request]
+
+jobs:
+  build:
+    name: 'Build docker image'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-test-image
+  lint-ruff:
+    name: 'Lint check (ruff)'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v1
+  unit-test:
+    name: 'Unit test'
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: true
+      matrix:
+        test_target: ['tests/app/']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-test-image
+      - name: build image on compose
+        run: docker compose build
+      - name: Change owner of output directory
+        run: |
+          sudo chown runner:docker /home/runner/work/TRE-server/TRE-server/cov
+          sudo chmod 777 /home/runner/work/TRE-server/TRE-server/cov
+      - name: run unit test
+        run: docker compose run -e TEST_TARGET="${{ matrix.test_target }}" unittest-tre-server
+      - run: mv cov/.coverage cov/.coverage-${{ strategy.job-index }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: .coverage-${{ strategy.job-index }}
+          path: cov/.coverage-${{ strategy.job-index }}
+          include-hidden-files: true
+      - run: mv cov/pytest.xml cov/pytest-${{ strategy.job-index }}.xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pytest-${{ strategy.job-index }}
+          path: cov/pytest-${{ strategy.job-index }}.xml
+  collect_coverage:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-test-image
+      - name: build image on compose
+        run: docker compose build
+      - name: Change owner of output directory
+        run: |
+          sudo chown runner:docker /home/runner/work/TRE-server/TRE-server/cov
+          sudo chmod 777 /home/runner/work/TRE-server/TRE-server/cov
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '.coverage-*'
+          path: cov/
+          merge-multiple: true
+      - name: combine coverage files
+        run: docker compose run -w /app/TRE-server/cov unittest-tre-server bash --login -c 'uv run coverage combine .coverage-*'
+      - name: generate coverage xml file
+        run: docker compose run -w /app/TRE-server unittest-tre-server bash --login -c 'uv run coverage xml --data-file=cov/.coverage -o cov/coverage.xml'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'pytest-*'
+          path: cov/
+          merge-multiple: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install junit-report-merger
+        run: npm install -g junit-report-merger
+      - name: Merge reports
+        run: jrm cov/pytest.xml "cov/pytest-*.xml"
+      - name: Pytest coverage comment
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@v1
+        with:
+          report-only-changed-files: true
+          pytest-xml-coverage-path: cov/coverage.xml
+          junitxml-path: cov/pytest.xml
+      - name: Count test cases in repository
+        id: countTest
+        run: |
+          RESULT=$(docker compose run -w /app/TRE-server unittest-tre-server bash --login -c 'uv run pytest --collect-only | grep -e "<Function" -e "<Coroutine"' | wc -l)
+          echo "test_count=${RESULT}" >> $GITHUB_OUTPUT
+      - run: echo ${{ steps.coverageComment.outputs.tests }}
+      - run: echo ${{ steps.countTest.outputs.test_count }}
+      - name: Check the count of test cases in CI
+        if: steps.coverageComment.outputs.tests != steps.countTest.outputs.test_count
+        run: exit 1

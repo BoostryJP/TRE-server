@@ -1,0 +1,7 @@
+services:
+  unittest-tre-server:
+    build:
+      context: ./
+      dockerfile: ./tests/Dockerfile_unittest
+    volumes:
+      - ./cov:/app/TRE-server/cov
