@@ -71,7 +71,6 @@ async def get_time_key(
     """Get time key"""
 
     if datetime.now(UTC).timestamp() < timestamp:
-        print(datetime.now(UTC).timestamp())
         raise InvalidParameterError("The release time has not been reached yet.")
 
     q_x: tuple[

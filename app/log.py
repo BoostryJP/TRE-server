@@ -24,42 +24,27 @@ from datetime import UTC, datetime
 
 from fastapi import Request, Response
 
-from config import ACCESS_LOGFILE, APP_ENV, AUTH_LOGFILE, LOG_LEVEL
+from config import ACCESS_LOGFILE, APP_ENV, LOG_LEVEL
 
 logging.basicConfig(level=LOG_LEVEL)
-LOG = logging.getLogger("issuer_api")
+LOG = logging.getLogger("tre_server")
 LOG.propagate = False
-AUTH_LOG = logging.getLogger("issuer_api_auth")
-AUTH_LOG.propagate = False
-ACCESS_LOG = logging.getLogger("issuer_api_access")
+ACCESS_LOG = logging.getLogger("tre_server_access")
 ACCESS_LOG.propagate = False
-
-logging.getLogger("web3.manager.RequestManager").propagate = False
-logging.getLogger("web3.manager.RequestManager").addHandler(logging.NullHandler())
 
 INFO_FORMAT = "[%(asctime)s] {}[%(process)d] [%(levelname)s] %(message)s"
 DEBUG_FORMAT = "[%(asctime)s] {}[%(process)d] [%(levelname)s] %(message)s [in %(pathname)s:%(lineno)d]"
 TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S %z"
-# NOTE:
-# If 'X-Forwarded-For' is set for headers, that will be set prioritized to client ip.
-# [client ip] [account address] message
-AUTH_FORMAT = "[%s] [%s] %s"
-ACCESS_FORMAT = '"%s %s HTTP/%s" %d (%.6fsec)'
+
+MESSAGE_FORMAT = '"%s %s HTTP/%s" %d (%.6fsec)'
+ACCESS_FORMAT = "[%s] %s"
 
 if APP_ENV == "live":
     # App Log
     stream_handler = logging.StreamHandler(sys.stdout)
-    formatter = logging.Formatter(INFO_FORMAT.format(""), TIMESTAMP_FORMAT)
+    formatter = logging.Formatter(INFO_FORMAT.format("[APP-LOG] "), TIMESTAMP_FORMAT)
     stream_handler.setFormatter(formatter)
     LOG.addHandler(stream_handler)
-
-    # Auth Log
-    stream_handler_auth = logging.StreamHandler(open(AUTH_LOGFILE, "a"))
-    formatter_auth = logging.Formatter(
-        INFO_FORMAT.format("[AUTH-LOG] "), TIMESTAMP_FORMAT
-    )
-    stream_handler_auth.setFormatter(formatter_auth)
-    AUTH_LOG.addHandler(stream_handler_auth)
 
     # Access Log
     stream_handler_access = logging.StreamHandler(open(ACCESS_LOGFILE, "a"))
@@ -72,37 +57,21 @@ if APP_ENV == "live":
 if APP_ENV == "dev" or APP_ENV == "local":
     # App Log
     stream_handler = logging.StreamHandler(sys.stdout)
-    formatter = logging.Formatter(DEBUG_FORMAT.format(""), TIMESTAMP_FORMAT)
+    formatter = logging.Formatter(DEBUG_FORMAT.format("[APP-LOG] "), TIMESTAMP_FORMAT)
     stream_handler.setFormatter(formatter)
     LOG.addHandler(stream_handler)
-
-    # Auth Log
-    stream_handler_auth = logging.StreamHandler(open(AUTH_LOGFILE, "a"))
-    formatter_auth = logging.Formatter(
-        DEBUG_FORMAT.format("[AUTH-LOG] "), TIMESTAMP_FORMAT
-    )
-    stream_handler_auth.setFormatter(formatter_auth)
-    AUTH_LOG.addHandler(stream_handler_auth)
 
     # Access Log
     stream_handler_access = logging.StreamHandler(open(ACCESS_LOGFILE, "a"))
     formatter_access = logging.Formatter(
         INFO_FORMAT.format("[ACCESS-LOG] "), TIMESTAMP_FORMAT
-    )  # Same live's formatter
+    )
     stream_handler_access.setFormatter(formatter_access)
     ACCESS_LOG.addHandler(stream_handler_access)
 
 
 def get_logger():
     return LOG
-
-
-def auth_info(req: Request, address: str, msg: str):
-    AUTH_LOG.info(__auth_format(req, address, msg))
-
-
-def auth_error(req: Request, address: str, msg: str):
-    AUTH_LOG.warning(__auth_format(req, address, msg))
 
 
 def output_access_log(req: Request, res: Response, request_start_time: datetime):
@@ -114,7 +83,7 @@ def output_access_log(req: Request, res: Response, request_start_time: datetime)
         response_time = (
             datetime.now(UTC).replace(tzinfo=None) - request_start_time
         ).total_seconds()
-        access_msg = ACCESS_FORMAT % (
+        access_msg = MESSAGE_FORMAT % (
             method,
             url,
             http_version,
@@ -122,23 +91,16 @@ def output_access_log(req: Request, res: Response, request_start_time: datetime)
             response_time,
         )
 
-        address = "None"  # Initial value
-        headers = req.scope.get("headers", [])
-        for header in headers:
-            key_bytes, value_bytes = header
-            if "issuer-address" == key_bytes.decode():
-                address = value_bytes.decode()
-
-        msg = __auth_format(req, address, access_msg)
+        msg = __format_log(req, access_msg)
         ACCESS_LOG.info(msg)
 
 
-def __auth_format(req: Request, address: str, msg: str):
+def __format_log(req: Request, msg: str):
     if req.client is None:
         _host = ""
     else:
         _host = req.client.host
-    return AUTH_FORMAT % (_host, address, msg)
+    return ACCESS_FORMAT % (_host, msg)
 
 
 def __get_url(req: Request):
