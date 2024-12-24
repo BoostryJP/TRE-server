@@ -46,7 +46,6 @@ RESPONSE_VALIDATION_MODE = (
 ####################################################
 # Logging
 LOG_LEVEL = CONFIG["logging"]["level"]
-AUTH_LOGFILE = os.environ.get("AUTH_LOGFILE") or "/dev/stdout"
 ACCESS_LOGFILE = os.environ.get("ACCESS_LOGFILE") or "/dev/stdout"
 
 ####################################################
