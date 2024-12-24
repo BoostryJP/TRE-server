@@ -114,7 +114,7 @@ class Error503Model(BaseModel):
 
 DEFAULT_RESPONSE: dict[int, dict[str, str | BaseModel]] = {
     400: {
-        "description": "Invalid Parameter Error / Send Transaction Error / Contract Revert Error etc",
+        "description": "Invalid Parameter Error etc",
         "model": Error400Model,
     },
     401: {"description": "Authorization Error", "model": Error401Model},

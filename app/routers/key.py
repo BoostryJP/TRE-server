@@ -29,6 +29,7 @@ from py_ecc.optimized_bls12_381.optimized_curve import multiply
 
 from app.exceptions import InvalidParameterError
 from app.model.schema import GetPublicKeyResponse, GetTimeKeyResponse
+from app.utils.docs_utils import get_routers_responses
 from app.utils.fastapi_utils import json_response
 from config import MASTER_KEY
 
@@ -62,6 +63,7 @@ async def get_public_key():
     "/time_key/{timestamp}",
     operation_id="GetTimeKey",
     response_model=GetTimeKeyResponse,
+    responses=get_routers_responses(InvalidParameterError),
 )
 async def get_time_key(
     timestamp: Annotated[int, Path(description="Unix timestamp")],

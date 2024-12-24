@@ -50,6 +50,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetTimeKeyResponse'
+        '400':
+          description: Invalid Parameter Error etc
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidParameterErrorResponse'
 components:
   schemas:
     GetPublicKeyResponse:
@@ -91,6 +97,39 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    InvalidParameterErrorCode:
+      type: integer
+      enum:
+        - 1
+      title: InvalidParameterErrorCode
+    InvalidParameterErrorMetainfo:
+      properties:
+        code:
+          $ref: '#/components/schemas/InvalidParameterErrorCode'
+          examples:
+            - 1
+        title:
+          type: string
+          title: Title
+          examples:
+            - InvalidParameterError
+      type: object
+      required:
+        - code
+        - title
+      title: InvalidParameterErrorMetainfo
+    InvalidParameterErrorResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/InvalidParameterErrorMetainfo'
+        detail:
+          type: string
+          title: Detail
+      type: object
+      required:
+        - meta
+        - detail
+      title: InvalidParameterErrorResponse
     TimeKeyFQ2Item:
       items:
         type: string
