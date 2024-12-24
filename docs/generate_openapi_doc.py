@@ -51,7 +51,7 @@ def main():
             os.path.join(
                 os.path.dirname(__file__),
                 os.path.pardir,
-                "docs/ibet_prime.yaml",
+                "docs/TRE-server.yaml",
             ),
         ),
         "w",

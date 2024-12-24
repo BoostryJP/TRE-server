@@ -1,0 +1,126 @@
+openapi: 3.1.0
+info:
+  title: TRE-server
+  description: Timed-Release Encryption server
+  version: '0.1'
+paths:
+  /:
+    get:
+      tags:
+        - root
+      summary: Root
+      operationId: root__get
+      responses:
+        '200':
+          description: Successful Response
+  /key/public_key:
+    get:
+      tags:
+        - key
+      summary: Get Public Key
+      description: Get public key
+      operationId: GetPublicKey
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPublicKeyResponse'
+  /key/time_key/{timestamp}:
+    get:
+      tags:
+        - key
+      summary: Get Time Key
+      description: Get time key
+      operationId: GetTimeKey
+      parameters:
+        - name: timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Unix timestamp
+            title: Timestamp
+          description: Unix timestamp
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTimeKeyResponse'
+components:
+  schemas:
+    GetPublicKeyResponse:
+      properties:
+        p:
+          items:
+            type: string
+          type: array
+          maxItems: 3
+          minItems: 3
+          title: P
+          description: Public key
+      type: object
+      required:
+        - p
+      title: GetPublicKeyResponse
+      description: Public key schema (RESPONSE)
+    GetTimeKeyResponse:
+      properties:
+        q:
+          items:
+            $ref: '#/components/schemas/TimeKeyFQ2Item'
+          type: array
+          maxItems: 3
+          minItems: 3
+          title: Q
+          description: Time key
+      type: object
+      required:
+        - q
+      title: GetTimeKeyResponse
+      description: Time key schema (RESPONSE)
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TimeKeyFQ2Item:
+      items:
+        type: string
+      type: array
+      maxItems: 2
+      minItems: 2
+      title: TimeKeyFQ2Item
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+tags:
+  - name: root
+    description: ''
+  - name: key
+    description: Keys for timed-release encryption
