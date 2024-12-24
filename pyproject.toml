@@ -74,4 +74,8 @@ combine-as-imports = true
 [tool.coverage.run]
 branch = true
 concurrency = ["thread", "greenlet"]
-include = []
+include = [
+    "app/routers/**/*",
+    "app/model/**/*",
+    "app/utils/**/*",
+]

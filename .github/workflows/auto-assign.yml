@@ -5,6 +5,7 @@ on:
 
 jobs:
   add-reviews:
+    name: 'Add reviewers'
     permissions:
       contents: read
       pull-requests: write
