@@ -47,7 +47,9 @@ class TestSingleTRE:
         ################################################
         print("\n================== [User] Encrypt message ==================\n")
 
-        original_txt = "test_text"
+        original_txt = (
+            "4b081b12b802f4a998814719155ea42e5bde32b16e2c54ebba6cf3d905448258"
+        )
         print(f"Text to encrypt = '{original_txt}'")
 
         r = int.from_bytes(secrets.token_bytes(32)) % curve_order
