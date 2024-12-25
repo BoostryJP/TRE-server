@@ -1,6 +1,6 @@
 import secrets
 from datetime import datetime
-from hashlib import sha256
+from hashlib import sha512
 
 from py_ecc.bls.ciphersuites import G2Basic
 from py_ecc.bls.hash import xor
@@ -60,7 +60,9 @@ class TestMultipleTRE:
         ################################################
         print("\n================== [User] Encrypt message ==================\n")
 
-        original_txt = "test_text"
+        original_txt = (
+            "4b081b12b802f4a998814719155ea42e5bde32b16e2c54ebba6cf3d905448258"
+        )
         print(f"Text to encrypt = '{original_txt}'")
 
         r = int.from_bytes(secrets.token_bytes(32)) % curve_order
@@ -78,7 +80,7 @@ class TestMultipleTRE:
                 )
                 ** r
             )
-            _hash = sha256()
+            _hash = sha512()
             for _item in c_2_fq12.coeffs:
                 _item = int(_item)
                 _hash.update(_item.to_bytes(48))
@@ -94,7 +96,7 @@ class TestMultipleTRE:
         _decrypted_text = c_2
         for q_x in [q_x_1, q_x_2]:
             dec_key = pairing(q_x, c_1)
-            _hash = sha256()
+            _hash = sha512()
             for _item in dec_key.coeffs:
                 _item = int(_item)
                 _hash.update(_item.to_bytes(48))

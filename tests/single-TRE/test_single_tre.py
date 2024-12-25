@@ -1,6 +1,6 @@
 import secrets
 from datetime import datetime
-from hashlib import sha256
+from hashlib import sha512
 
 from py_ecc.bls.ciphersuites import G2Basic
 from py_ecc.bls.hash import xor
@@ -63,7 +63,7 @@ class TestSingleTRE:
             )
             ** r
         )
-        _hash = sha256()
+        _hash = sha512()
         for _item in c_2_fq12.coeffs:
             _item = int(_item)
             _hash.update(_item.to_bytes(48))
@@ -76,7 +76,7 @@ class TestSingleTRE:
         print("\n================== [User] Decrypt message ==================\n")
 
         dec_key = pairing(q_x, c_1)
-        _hash = sha256()
+        _hash = sha512()
         for _item in dec_key.coeffs:
             _item = int(_item)
             _hash.update(_item.to_bytes(48))
