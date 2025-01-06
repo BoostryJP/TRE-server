@@ -11,7 +11,8 @@ ENV UV_PROJECT_ENVIRONMENT="/home/apl/.venv"
 RUN mkdir -p /app
 
 # add apl user/group
-RUN groupadd -g 999 apl \
+RUN userdel -r ubuntu \
+ && groupadd -g 1000 apl \
  && useradd -g apl -s /bin/bash -u 999 -p apl apl \
  && echo 'apl ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
  && chown -R apl:apl /app \
@@ -77,7 +78,8 @@ FROM ubuntu:24.04 AS runner
 RUN mkdir -p /app/TRE-server/
 
 # add apl user/group
-RUN groupadd -g 999 apl \
+RUN userdel -r ubuntu \
+ && groupadd -g 1000 apl \
  && useradd -g apl -s /bin/bash -u 999 -p apl apl \
  && echo 'apl ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
  && chown -R apl:apl /app \
