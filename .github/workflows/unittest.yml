@@ -61,7 +61,7 @@ jobs:
         run: |
           sudo chown runner:docker /home/runner/work/TRE-server/TRE-server/cov
           sudo chmod 777 /home/runner/work/TRE-server/TRE-server/cov
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           pattern: '.coverage-*'
           path: cov/
@@ -70,7 +70,7 @@ jobs:
         run: docker compose run -w /app/TRE-server/cov unittest-tre-server bash --login -c 'uv run coverage combine .coverage-*'
       - name: generate coverage xml file
         run: docker compose run -w /app/TRE-server unittest-tre-server bash --login -c 'uv run coverage xml --data-file=cov/.coverage -o cov/coverage.xml'
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           pattern: 'pytest-*'
           path: cov/
