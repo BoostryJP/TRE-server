@@ -16,7 +16,7 @@ updates:
     allow:
     - dependency-name: "*"
       dependency-type: "direct"
-  - package-ecosystem: docker-compose
+  - package-ecosystem: "docker-compose"
     directory: "/"
     schedule:
       interval: "monthly"
