@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: astral-sh/ruff-action@v1
+      - uses: astral-sh/ruff-action@v3
   unit-test:
     name: 'Unit test'
     runs-on: ubuntu-latest
