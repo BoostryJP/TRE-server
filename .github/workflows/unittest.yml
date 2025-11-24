@@ -6,13 +6,13 @@ jobs:
     name: 'Build docker image'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-test-image
   lint-ruff:
     name: 'Lint check (ruff)'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: astral-sh/ruff-action@v3
   unit-test:
     name: 'Unit test'
@@ -23,7 +23,7 @@ jobs:
       matrix:
         test_target: ['tests/']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-test-image
       - name: build image on compose
         run: docker compose build
@@ -53,7 +53,7 @@ jobs:
       packages: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-test-image
       - name: build image on compose
         run: docker compose build
