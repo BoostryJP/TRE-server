@@ -34,13 +34,13 @@ jobs:
       - name: run unit test
         run: docker compose run -e TEST_TARGET="${{ matrix.test_target }}" unittest-tre-server
       - run: mv cov/.coverage cov/.coverage-${{ strategy.job-index }}
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: .coverage-${{ strategy.job-index }}
           path: cov/.coverage-${{ strategy.job-index }}
           include-hidden-files: true
       - run: mv cov/pytest.xml cov/pytest-${{ strategy.job-index }}.xml
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: pytest-${{ strategy.job-index }}
           path: cov/pytest-${{ strategy.job-index }}.xml
