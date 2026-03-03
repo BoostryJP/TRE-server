@@ -34,13 +34,13 @@ jobs:
       - name: run unit test
         run: docker compose run -e TEST_TARGET="${{ matrix.test_target }}" unittest-tre-server
       - run: mv cov/.coverage cov/.coverage-${{ strategy.job-index }}
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: .coverage-${{ strategy.job-index }}
           path: cov/.coverage-${{ strategy.job-index }}
           include-hidden-files: true
       - run: mv cov/pytest.xml cov/pytest-${{ strategy.job-index }}.xml
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: pytest-${{ strategy.job-index }}
           path: cov/pytest-${{ strategy.job-index }}.xml
@@ -61,7 +61,7 @@ jobs:
         run: |
           sudo chown runner:docker /home/runner/work/TRE-server/TRE-server/cov
           sudo chmod 777 /home/runner/work/TRE-server/TRE-server/cov
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: '.coverage-*'
           path: cov/
@@ -70,7 +70,7 @@ jobs:
         run: docker compose run -w /app/TRE-server/cov unittest-tre-server bash --login -c 'uv run coverage combine .coverage-*'
       - name: generate coverage xml file
         run: docker compose run -w /app/TRE-server unittest-tre-server bash --login -c 'uv run coverage xml --data-file=cov/.coverage -o cov/coverage.xml'
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: 'pytest-*'
           path: cov/
