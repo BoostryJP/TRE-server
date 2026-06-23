@@ -20,14 +20,17 @@ SPDX-License-Identifier: Apache-2.0
 import pytest
 import pytest_asyncio
 from fastapi.testclient import TestClient
-from httpx import AsyncClient
+from httpx2 import ASGITransport, AsyncClient
 
 from app.main import app
 
 
 @pytest_asyncio.fixture(scope="session")
 async def async_client() -> AsyncClient:
-    async_client = AsyncClient(app=app, base_url="http://localhost")
+    async_client = AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://localhost",
+    )
     async with async_client as s:
         yield s
 

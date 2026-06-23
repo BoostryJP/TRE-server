@@ -115,7 +115,7 @@ def convert_errors(
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     meta = {"code": 1, "title": "RequestValidationError"}
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         content=jsonable_encoder({"meta": meta, "detail": convert_errors(exc)}),
     )
 
@@ -126,7 +126,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 async def query_validation_exception_handler(request: Request, exc: ValidationError):
     meta = {"code": 1, "title": "RequestValidationError"}
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         content=jsonable_encoder({"meta": meta, "detail": convert_errors(exc)}),
     )
 
