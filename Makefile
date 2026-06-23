@@ -1,7 +1,7 @@
 .PHONY: install update format lint doc test run
 
 install:
-	uv sync --frozen --no-install-project
+	UV_MALWARE_CHECK=1 uv sync --frozen --no-install-project
 	uv run pre-commit install
 
 update:
