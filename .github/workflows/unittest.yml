@@ -6,13 +6,13 @@ jobs:
     name: 'Build docker image'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - uses: ./.github/actions/setup-test-image
   lint-ruff:
     name: 'Lint check (ruff)'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - uses: astral-sh/ruff-action@v3
   unit-test:
     name: 'Unit test'
@@ -23,7 +23,7 @@ jobs:
       matrix:
         test_target: ['tests/']
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - uses: ./.github/actions/setup-test-image
       - name: build image on compose
         run: docker compose build
@@ -34,13 +34,13 @@ jobs:
       - name: run unit test
         run: docker compose run -e TEST_TARGET="${{ matrix.test_target }}" unittest-tre-server
       - run: mv cov/.coverage cov/.coverage-${{ strategy.job-index }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: .coverage-${{ strategy.job-index }}
           path: cov/.coverage-${{ strategy.job-index }}
           include-hidden-files: true
       - run: mv cov/pytest.xml cov/pytest-${{ strategy.job-index }}.xml
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pytest-${{ strategy.job-index }}
           path: cov/pytest-${{ strategy.job-index }}.xml
@@ -53,7 +53,7 @@ jobs:
       packages: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - uses: ./.github/actions/setup-test-image
       - name: build image on compose
         run: docker compose build
@@ -61,7 +61,7 @@ jobs:
         run: |
           sudo chown runner:docker /home/runner/work/TRE-server/TRE-server/cov
           sudo chmod 777 /home/runner/work/TRE-server/TRE-server/cov
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: '.coverage-*'
           path: cov/
@@ -70,21 +70,21 @@ jobs:
         run: docker compose run -w /app/TRE-server/cov unittest-tre-server bash --login -c 'uv run coverage combine .coverage-*'
       - name: generate coverage xml file
         run: docker compose run -w /app/TRE-server unittest-tre-server bash --login -c 'uv run coverage xml --data-file=cov/.coverage -o cov/coverage.xml'
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: 'pytest-*'
           path: cov/
           merge-multiple: true
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: 20
+          node-version: 24
       - name: Install junit-report-merger
         run: npm install -g junit-report-merger
       - name: Merge reports
         run: jrm cov/pytest.xml "cov/pytest-*.xml"
       - name: Pytest coverage comment
         id: coverageComment
-        uses: MishaKav/pytest-coverage-comment@v1
+        uses: MishaKav/pytest-coverage-comment@dd5b80bde6d16941f336518e92929e89069d8451 # v1.7.2
         with:
           report-only-changed-files: true
           pytest-xml-coverage-path: cov/coverage.xml
